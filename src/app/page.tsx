@@ -22,6 +22,18 @@ const AssetEvaluator = dynamic(() => import('@/components/sections/AssetEvaluato
   ssr: false,
   loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#0a0a14] text-white/20">加载身价评估中心...</div>
 });
+const TrueOwnershipBalance = dynamic(() => import('@/components/sections/TrueOwnershipBalance'), {
+  ssr: false,
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#070714] text-white/20">加载所有权天平...</div>
+});
+const AssetDepreciationFunnel = dynamic(() => import('@/components/sections/AssetDepreciationFunnel'), {
+  ssr: false,
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#0a0a14] text-white/20">加载残值蒸发漏斗...</div>
+});
+const DataExplorer = dynamic(() => import('@/components/sections/DataExplorer'), {
+  ssr: false,
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#05050A] text-white/20">加载数据探索器...</div>
+});
 const InteractiveQuiz = dynamic(() => import('@/components/sections/InteractiveQuiz'), {
   ssr: false,
   loading: () => <div className="min-h-[400px] flex items-center justify-center bg-[#08081a] text-white/20">加载知识挑战...</div>
@@ -85,7 +97,10 @@ export default function Home() {
             <a href="#assets" className="hover:text-sky-400 transition">核心锚点</a>
             <a href="#deepdive" className="hover:text-sky-400 transition font-bold text-sky-500">📊 数据深潜</a>
             <a href="#sourcedata" className="hover:text-amber-400 transition font-bold text-amber-400">📋 信源数据</a>
+            <a href="#data-explorer" className="hover:text-emerald-400 transition font-bold text-emerald-400">🔍 探索库</a>
             <a href="#evaluator" className="hover:text-sky-400 transition px-2 py-1 bg-white/5 rounded-lg border border-white/10">✨ 身价</a>
+            <a href="#ownership-balance" className="hover:text-sky-400 transition px-2 py-1 bg-white/5 rounded-lg border border-white/10">⚖️ 天平</a>
+            <a href="#depreciation-funnel" className="hover:text-amber-400 transition px-2 py-1 bg-white/5 rounded-lg border border-white/10">📉 漏斗</a>
             <a href="#quiz" className="hover:text-emerald-400 transition px-2 py-1 bg-white/5 rounded-lg border border-white/10">🧠 挑战</a>
             <a href="#poll" className="hover:text-rose-400 transition">🗳️ 投票</a>
             <a href="#legal" className="hover:text-sky-400 transition">合规</a>
@@ -105,7 +120,10 @@ export default function Home() {
         <Data />
         <DataDeepDive />
         <SourceDataViz />
+        <DataExplorer />
         <AssetEvaluator />
+        <TrueOwnershipBalance />
+        <AssetDepreciationFunnel />
         <InteractiveQuiz />
         <LivePoll />
         <Psychology />
