@@ -8,7 +8,11 @@ import dynamic from 'next/dynamic';
 // 导入核心 Hero 块
 import Hero from '@/components/sections/Hero';
 
-// 动态载入数据可视化和探索组件 (优化首屏加载，支持 ssr: false)
+// 动态载入数据可视化和探索组件 (调整叙事逻辑：问题 -> 现状 -> 原因 -> 对策)
+const TrueOwnershipBalance = dynamic(() => import('@/components/sections/TrueOwnershipBalance'), {
+  ssr: false,
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#070714] text-white/20 font-mono text-xs">加载所有权天平...</div>
+});
 const AuthorityFacts = dynamic(() => import('@/components/sections/AuthorityFacts'), {
   ssr: false,
   loading: () => <div className="min-h-[400px] flex items-center justify-center bg-[#05050A] text-white/20 font-mono text-xs">加载权威事实数据...</div>
@@ -16,14 +20,6 @@ const AuthorityFacts = dynamic(() => import('@/components/sections/AuthorityFact
 const DataExplorer = dynamic(() => import('@/components/sections/DataExplorer'), {
   ssr: false,
   loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#05050A] text-white/20 font-mono text-xs">加载数据探索实验室...</div>
-});
-const AssetEvaluator = dynamic(() => import('@/components/sections/AssetEvaluator'), { 
-  ssr: false,
-  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#0a0a14] text-white/20 font-mono text-xs">加载身价评估中心...</div>
-});
-const TrueOwnershipBalance = dynamic(() => import('@/components/sections/TrueOwnershipBalance'), {
-  ssr: false,
-  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#070714] text-white/20 font-mono text-xs">加载所有权天平...</div>
 });
 const AssetDepreciationFunnel = dynamic(() => import('@/components/sections/AssetDepreciationFunnel'), {
   ssr: false,
@@ -71,7 +67,7 @@ export default function Home() {
   return (
     <main ref={containerRef} className="relative w-full overflow-x-hidden min-h-screen selection:bg-emerald-500/30 bg-[#05050A] font-sans antialiased">
       
-      {/* Dynamic Grid Overlay Background (Mobile-first performance optimization instead of WebGL 3D) */}
+      {/* Dynamic Grid Overlay Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
 
       {/* Navigation Layer */}
@@ -82,15 +78,14 @@ export default function Home() {
             <span className="font-black text-sm lg:text-lg tracking-tighter text-white">消失的赛博遗产 / 数据新闻</span>
           </div>
           
-          {/* Scroll Anchors (Visible on Tablet/Desktop, hidden on mobile for cleaner view) */}
-          <div className="hidden md:flex space-x-3 text-slate-400 pointer-events-auto font-medium text-xs">
+          {/* Scroll Anchors (Aligned to Narrative Logic: Intro -> Facts -> Cause -> Solution) */}
+          <div className="hidden md:flex space-x-4 text-slate-400 pointer-events-auto font-medium text-xs">
             <a href="#hero" className="hover:text-emerald-400 transition">起势</a>
-            <a href="#authority-facts" className="hover:text-emerald-400 transition">实证数据</a>
-            <a href="#data-explorer" className="hover:text-emerald-400 transition">数据探索</a>
-            <a href="#evaluator" className="hover:text-emerald-400 transition">身价评估</a>
-            <a href="#ownership-balance" className="hover:text-emerald-400 transition">所有权天平</a>
-            <a href="#depreciation-funnel" className="hover:text-emerald-400 transition">残值漏斗</a>
-            <a href="#cyber-will" className="hover:text-emerald-400 transition">数字遗嘱</a>
+            <a href="#ownership-balance" className="hover:text-emerald-400 transition">1. 介绍问题 (权属天平)</a>
+            <a href="#authority-facts" className="hover:text-emerald-400 transition">2. 讲现状 (数据实证)</a>
+            <a href="#data-explorer" className="hover:text-emerald-400 transition">3. 探索库</a>
+            <a href="#depreciation-funnel" className="hover:text-emerald-400 transition">4. 分析原因 (贬值漏斗)</a>
+            <a href="#cyber-will" className="hover:text-emerald-400 transition">5. 解决对策 (数字遗嘱)</a>
             <a href="#legal" className="hover:text-emerald-400 transition">司法合规</a>
           </div>
           
@@ -100,14 +95,21 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Main Content Sections */}
+      {/* Main Content Sections (Structured by: Intro -> Facts -> Cause -> Solution) */}
       <div className="relative z-10 w-full">
         <Hero />
+        
+        {/* Step 1: 介绍问题 */}
+        <TrueOwnershipBalance />
+        
+        {/* Step 2: 讲现状 */}
         <AuthorityFacts />
         <DataExplorer />
-        <AssetEvaluator />
-        <TrueOwnershipBalance />
+        
+        {/* Step 3: 分析原因 */}
         <AssetDepreciationFunnel />
+        
+        {/* Step 4: 解决对策 */}
         <CyberWill />
         <Legal />
         <Sources />
