@@ -3,46 +3,37 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
 import dynamic from 'next/dynamic';
-const Scene3D = dynamic(() => import('@/components/canvas/Scene3D'), { ssr: false });
 
-// Import our sections
+// 导入核心 Hero 块
 import Hero from '@/components/sections/Hero';
-const Paradigm = dynamic(() => import('@/components/sections/Paradigm'), { ssr: false });
-import Timeline from '@/components/sections/Timeline';
-import Assets from '@/components/sections/Assets';
-const Data = dynamic(() => import('@/components/sections/Data'), { ssr: false });
-import DataDeepDive from '@/components/sections/DataDeepDive';
-const SourceDataViz = dynamic(() => import('@/components/sections/SourceDataViz'), { 
+
+// 动态载入数据可视化和探索组件 (优化首屏加载，支持 ssr: false)
+const AuthorityFacts = dynamic(() => import('@/components/sections/AuthorityFacts'), {
   ssr: false,
-  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#06061a] text-white/20">加载信源数据...</div>
-});
-const AssetEvaluator = dynamic(() => import('@/components/sections/AssetEvaluator'), { 
-  ssr: false,
-  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#0a0a14] text-white/20">加载身价评估中心...</div>
-});
-const TrueOwnershipBalance = dynamic(() => import('@/components/sections/TrueOwnershipBalance'), {
-  ssr: false,
-  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#070714] text-white/20">加载所有权天平...</div>
-});
-const AssetDepreciationFunnel = dynamic(() => import('@/components/sections/AssetDepreciationFunnel'), {
-  ssr: false,
-  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#0a0a14] text-white/20">加载残值蒸发漏斗...</div>
+  loading: () => <div className="min-h-[400px] flex items-center justify-center bg-[#05050A] text-white/20 font-mono text-xs">加载权威事实数据...</div>
 });
 const DataExplorer = dynamic(() => import('@/components/sections/DataExplorer'), {
   ssr: false,
-  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#05050A] text-white/20">加载数据探索器...</div>
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#05050A] text-white/20 font-mono text-xs">加载数据探索实验室...</div>
 });
-const InteractiveQuiz = dynamic(() => import('@/components/sections/InteractiveQuiz'), {
+const AssetEvaluator = dynamic(() => import('@/components/sections/AssetEvaluator'), { 
   ssr: false,
-  loading: () => <div className="min-h-[400px] flex items-center justify-center bg-[#08081a] text-white/20">加载知识挑战...</div>
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#0a0a14] text-white/20 font-mono text-xs">加载身价评估中心...</div>
 });
-const LivePoll = dynamic(() => import('@/components/sections/LivePoll'), {
+const TrueOwnershipBalance = dynamic(() => import('@/components/sections/TrueOwnershipBalance'), {
   ssr: false,
-  loading: () => <div className="min-h-[400px] flex items-center justify-center bg-[#0a0a18] text-white/20">加载实时民调...</div>
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#070714] text-white/20 font-mono text-xs">加载所有权天平...</div>
 });
-import Psychology from '@/components/sections/Psychology';
+const AssetDepreciationFunnel = dynamic(() => import('@/components/sections/AssetDepreciationFunnel'), {
+  ssr: false,
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#0a0a14] text-white/20 font-mono text-xs">加载残值蒸发漏斗...</div>
+});
+const CyberWill = dynamic(() => import('@/components/sections/CyberWill'), {
+  ssr: false,
+  loading: () => <div className="min-h-[500px] flex items-center justify-center bg-[#070714] text-white/20 font-mono text-xs">加载数字遗嘱生成器...</div>
+});
+
 const Legal = dynamic(() => import('@/components/sections/Legal'), { ssr: false });
 import Sources from '@/components/sections/Sources';
 
@@ -57,76 +48,67 @@ export default function Home() {
     
     contentBoxes.forEach((box) => {
       gsap.fromTo(box as HTMLElement, 
-        { opacity: 0, y: 50 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1, 
           y: 0,
-          duration: 0.8,
+          duration: 0.6,
           ease: "power2.out",
           scrollTrigger: {
             trigger: box as HTMLElement,
-            start: "top 85%", // Triggers when the top of the box hits 85% down the viewport
+            start: "top 85%", 
             toggleActions: "play none none reverse",
           }
         }
       );
     });
 
-    // Cleanup scroll triggers on unmount
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
   return (
-    <main ref={containerRef} className="relative w-full overflow-x-hidden min-h-screen selection:bg-sky-500/30 font-sans">
+    <main ref={containerRef} className="relative w-full overflow-x-hidden min-h-screen selection:bg-emerald-500/30 bg-[#05050A] font-sans antialiased">
       
-      {/* 3D Background */}
-      <Scene3D />
+      {/* Dynamic Grid Overlay Background (Mobile-first performance optimization instead of WebGL 3D) */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
 
       {/* Navigation Layer */}
-      <nav className="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-md px-6 py-4 transition-all duration-300 border-b border-white/10">
+      <nav className="fixed top-0 w-full z-50 bg-[#05050A]/70 backdrop-blur-md px-4 sm:px-6 py-4 border-b border-white/10">
         <div className="max-w-7xl mx-auto flex justify-between items-center text-xs lg:text-sm">
           <div className="flex items-center space-x-2 pointer-events-auto">
-            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-sky-600 rounded-xl flex items-center justify-center text-white font-bold italic shadow-lg">N</div>
-            <span className="font-bold text-base lg:text-xl tracking-tighter text-white">虚拟资产发展全景观察</span>
+            <div className="w-8 h-8 lg:w-9 lg:h-9 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-black shadow-lg">D</div>
+            <span className="font-black text-sm lg:text-lg tracking-tighter text-white">消失的赛博遗产 / 数据新闻</span>
           </div>
-          <div className="hidden lg:flex space-x-4 text-slate-400 pointer-events-auto font-medium">
-            <a href="#hero" className="hover:text-sky-400 transition">起势</a>
-            <a href="#evolution" className="hover:text-sky-400 transition">时代演进</a>
-            <a href="#assets" className="hover:text-sky-400 transition">核心锚点</a>
-            <a href="#deepdive" className="hover:text-sky-400 transition font-bold text-sky-500">📊 数据深潜</a>
-            <a href="#sourcedata" className="hover:text-amber-400 transition font-bold text-amber-400">📋 信源数据</a>
-            <a href="#data-explorer" className="hover:text-emerald-400 transition font-bold text-emerald-400">🔍 探索库</a>
-            <a href="#evaluator" className="hover:text-sky-400 transition px-2 py-1 bg-white/5 rounded-lg border border-white/10">✨ 身价</a>
-            <a href="#ownership-balance" className="hover:text-sky-400 transition px-2 py-1 bg-white/5 rounded-lg border border-white/10">⚖️ 天平</a>
-            <a href="#depreciation-funnel" className="hover:text-amber-400 transition px-2 py-1 bg-white/5 rounded-lg border border-white/10">📉 漏斗</a>
-            <a href="#quiz" className="hover:text-emerald-400 transition px-2 py-1 bg-white/5 rounded-lg border border-white/10">🧠 挑战</a>
-            <a href="#poll" className="hover:text-rose-400 transition">🗳️ 投票</a>
-            <a href="#legal" className="hover:text-sky-400 transition">合规</a>
+          
+          {/* Scroll Anchors (Visible on Tablet/Desktop, hidden on mobile for cleaner view) */}
+          <div className="hidden md:flex space-x-3 text-slate-400 pointer-events-auto font-medium text-xs">
+            <a href="#hero" className="hover:text-emerald-400 transition">起势</a>
+            <a href="#authority-facts" className="hover:text-emerald-400 transition">实证数据</a>
+            <a href="#data-explorer" className="hover:text-emerald-400 transition">数据探索</a>
+            <a href="#evaluator" className="hover:text-emerald-400 transition">身价评估</a>
+            <a href="#ownership-balance" className="hover:text-emerald-400 transition">所有权天平</a>
+            <a href="#depreciation-funnel" className="hover:text-emerald-400 transition">残值漏斗</a>
+            <a href="#cyber-will" className="hover:text-emerald-400 transition">数字遗嘱</a>
+            <a href="#legal" className="hover:text-emerald-400 transition">司法合规</a>
           </div>
-          <button onClick={() => document.getElementById('sources')?.scrollIntoView()} className="pointer-events-auto bg-white/10 text-white px-3 lg:px-5 py-2 rounded-full text-[10px] lg:text-xs font-bold hover:bg-sky-600 border border-white/20 transition shadow-md whitespace-nowrap">
-            数据源
+          
+          <button onClick={() => document.getElementById('sources')?.scrollIntoView()} className="pointer-events-auto bg-white/5 text-white px-4 py-2 rounded-xl text-[10px] lg:text-xs font-bold hover:bg-emerald-600 hover:text-black border border-white/10 transition shadow-md whitespace-nowrap">
+            数据信源
           </button>
         </div>
       </nav>
 
       {/* Main Content Sections */}
-      <Hero />
-      <div className="relative bg-[#05050A]/80 backdrop-blur-sm z-10 w-full">
-        <Paradigm />
-        <Timeline />
-        <Assets />
-        <Data />
-        <DataDeepDive />
-        <SourceDataViz />
+      <div className="relative z-10 w-full">
+        <Hero />
+        <AuthorityFacts />
         <DataExplorer />
         <AssetEvaluator />
         <TrueOwnershipBalance />
         <AssetDepreciationFunnel />
-        <InteractiveQuiz />
-        <LivePoll />
-        <Psychology />
+        <CyberWill />
         <Legal />
         <Sources />
       </div>
