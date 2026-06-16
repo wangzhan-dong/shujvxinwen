@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <section id="hero" className="scroll-section relative h-[90vh] w-full flex items-center justify-center overflow-hidden px-4 z-10 text-center">
+    <section id="hero" className="scroll-section relative h-[90vh] w-full flex items-center justify-center overflow-hidden px-4 z-10 text-center bg-transparent">
       <div className="content-box max-w-4xl mt-10">
         <motion.p 
-          className="text-emerald-400 font-mono tracking-widest mb-4 uppercase text-xs border border-emerald-400/30 inline-block px-4 py-1 rounded-full bg-emerald-950/30"
+          className="text-emerald-700 font-mono tracking-widest mb-4 uppercase text-xs border border-emerald-200 inline-block px-4 py-1 rounded-full bg-emerald-50"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -16,19 +16,19 @@ export default function Hero() {
         </motion.p>
         
         <motion.h1 
-          className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight"
+          className="text-5xl md:text-7xl font-black text-slate-950 mb-6 leading-tight"
           initial={{ letterSpacing: "0.2em", opacity: 0 }}
           animate={{ letterSpacing: "0.02em", opacity: 1 }}
           transition={{ duration: 1, delay: 0.4 }}
         >
           消失的赛博遗产<br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-indigo-400">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600">
             我们真的“拥有”虚拟资产吗？
           </span>
         </motion.h1>
         
         <motion.p 
-          className="text-slate-400 text-sm md:text-base mb-12 max-w-2xl mx-auto leading-relaxed"
+          className="text-slate-500 text-sm md:text-base mb-12 max-w-2xl mx-auto leading-relaxed font-medium"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
@@ -44,10 +44,10 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.8 }}
         >
-          <span className="text-[10px] uppercase font-mono text-slate-500 tracking-widest">
+          <span className="text-[10px] uppercase font-mono text-slate-400 tracking-widest">
             向下滚动开始数据探索
           </span>
-          <div className="w-5 h-8 border-2 border-slate-600 rounded-full flex justify-center p-1">
+          <div className="w-5 h-8 border-2 border-slate-300 rounded-full flex justify-center p-1">
             <motion.div 
               animate={{ 
                 y: [0, 10, 0]
@@ -57,7 +57,7 @@ export default function Hero() {
                 repeat: Infinity, 
                 ease: "easeInOut" 
               }}
-              className="w-1.5 h-1.5 bg-emerald-400 rounded-full"
+              className="w-1.5 h-1.5 bg-emerald-600 rounded-full"
             />
           </div>
         </motion.div>

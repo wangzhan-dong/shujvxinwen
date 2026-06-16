@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // 定义虚拟资产的硬核数据集 (模拟真实行业调研数据)
 interface AssetData {
@@ -156,24 +157,22 @@ export default function DataExplorer() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAsset, setSelectedAsset] = useState<AssetData | null>(RAW_DATASET[0]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // 过滤和排序数据
   const processedData = useMemo(() => {
     let result = [...RAW_DATASET];
 
-    // 分类筛选
     if (filterCategory !== "all") {
       result = result.filter((item) => item.category === filterCategory);
     }
 
-    // 搜索筛选
     if (searchQuery.trim() !== "") {
       result = result.filter((item) =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // 排序
     result.sort((a, b) => {
       const valA = a[sortBy];
       const valB = b[sortBy];
@@ -201,7 +200,6 @@ export default function DataExplorer() {
     }
   };
 
-  // 导出模拟 CSV 数据
   const exportCSV = () => {
     const headers = "资产名称,分类,保值残值率(%),继承可控指数,自由转让指数,平均价值,所有权归属\n";
     const rows = RAW_DATASET.map(
@@ -217,25 +215,25 @@ export default function DataExplorer() {
   };
 
   return (
-    <section id="data-explorer" className="scroll-section py-24 bg-[#05050A] text-white px-6 relative z-10 border-t border-white/10">
+    <section id="data-explorer" className="scroll-section py-24 bg-white text-slate-900 px-6 relative z-10 border-t border-slate-200">
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
           <div>
-            <span className="text-emerald-400 font-mono text-sm tracking-widest uppercase mb-4 block">
+            <span className="text-emerald-700 font-mono text-sm tracking-widest uppercase mb-4 block">
               DATA JOURNALISM LAB / 数据新闻开源实验室
             </span>
-            <h2 className="text-4xl md:text-5xl font-black mb-2 text-white">
+            <h2 className="text-4xl md:text-5xl font-black mb-2 text-slate-950">
               虚拟资产属性探索库
             </h2>
-            <p className="text-slate-400 max-w-2xl text-xs leading-relaxed">
+            <p className="text-slate-500 max-w-2xl text-xs leading-relaxed font-medium">
               数据新闻核心：让数据说话，将选择权交还读者。你可以自由筛选、排序，探索主流虚拟资产在二级贬值率、司法实践和用户协议限制上的多维特征。
             </p>
           </div>
           <button
             onClick={exportCSV}
-            className="px-6 py-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500 hover:text-black font-bold text-xs transition active:scale-95 flex items-center gap-2"
+            className="px-6 py-3 bg-emerald-50 border border-emerald-250 border-emerald-250/80 text-emerald-700 rounded-xl hover:bg-emerald-600 hover:text-white font-bold text-xs transition active:scale-95 flex items-center gap-2 shadow-sm"
           >
             📥 下载原始数据集 (CSV)
           </button>
@@ -243,8 +241,8 @@ export default function DataExplorer() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Part: Grid Table Explorer (8 cols) */}
-          <div className="lg:col-span-8 bg-white/5 border border-white/10 rounded-[2.5rem] p-6 backdrop-blur-xl">
+          {/* Left Part: Grid Table Explorer */}
+          <div className="lg:col-span-8 bg-slate-50 border border-slate-200/80 rounded-[2.5rem] p-6 shadow-sm w-full overflow-hidden">
             
             {/* Filter Toolbar */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6 justify-between">
@@ -260,10 +258,10 @@ export default function DataExplorer() {
                   <button
                     key={btn.key}
                     onClick={() => setFilterCategory(btn.key)}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition border ${
                       filterCategory === btn.key
-                        ? "bg-white/10 border border-white/20 text-white"
-                        : "bg-white/0 border border-transparent text-slate-500 hover:text-slate-300"
+                        ? "bg-white border-slate-300 text-slate-900 shadow-sm"
+                        : "bg-transparent border-transparent text-slate-500 hover:text-slate-800"
                     }`}
                   >
                     {btn.label}
@@ -277,58 +275,61 @@ export default function DataExplorer() {
                 placeholder="搜索资产名称..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 transition placeholder:opacity-40 w-full sm:max-w-[200px]"
+                className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-500 transition placeholder:opacity-50 w-full sm:max-w-[200px]"
               />
             </div>
 
             {/* Interactive Data Table */}
             <div className="overflow-x-auto w-full">
-              <table className="w-full text-left text-xs text-slate-300 min-w-[600px]">
+              <table className="w-full text-left text-xs text-slate-700 min-w-[600px]">
                 <thead>
-                  <tr className="border-b border-white/10 text-slate-500 font-mono">
-                    <th className="pb-3 font-semibold">资产名称</th>
-                    <th className="pb-3 font-semibold">类型</th>
-                    <th className="pb-3 font-semibold cursor-pointer hover:text-white transition" onClick={() => handleSort("residualRate")}>
+                  <tr className="border-b border-slate-200 text-slate-400 font-mono">
+                    <th className="pb-3 font-bold">资产名称</th>
+                    <th className="pb-3 font-bold">类型</th>
+                    <th className="pb-3 font-bold cursor-pointer hover:text-slate-800 transition" onClick={() => handleSort("residualRate")}>
                       残值率 % {sortBy === "residualRate" ? (sortOrder === "desc" ? "▼" : "▲") : ""}
                     </th>
-                    <th className="pb-3 font-semibold cursor-pointer hover:text-white transition" onClick={() => handleSort("inheritableScore")}>
+                    <th className="pb-3 font-bold cursor-pointer hover:text-slate-800 transition" onClick={() => handleSort("inheritableScore")}>
                       可继承性 {sortBy === "inheritableScore" ? (sortOrder === "desc" ? "▼" : "▲") : ""}
                     </th>
-                    <th className="pb-3 font-semibold cursor-pointer hover:text-white transition" onClick={() => handleSort("transferableScore")}>
+                    <th className="pb-3 font-bold cursor-pointer hover:text-slate-800 transition" onClick={() => handleSort("transferableScore")}>
                       可交易性 {sortBy === "transferableScore" ? (sortOrder === "desc" ? "▼" : "▲") : ""}
                     </th>
-                    <th className="pb-3 font-semibold">所有权属</th>
+                    <th className="pb-3 font-bold">所有权属</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5 font-medium">
+                <tbody className="divide-y divide-slate-100 font-medium">
                   {processedData.map((asset) => (
                     <tr
                       key={asset.id}
-                      onClick={() => setSelectedAsset(asset)}
-                      className={`cursor-pointer transition hover:bg-white/5 ${
-                        selectedAsset?.id === asset.id ? "bg-white/10 text-white" : ""
+                      onClick={() => {
+                        setSelectedAsset(asset);
+                        setIsDrawerOpen(true);
+                      }}
+                      className={`cursor-pointer transition hover:bg-slate-100/40 ${
+                        selectedAsset?.id === asset.id ? "bg-white text-slate-950 shadow-sm font-bold" : ""
                       }`}
                     >
-                      <td className="py-4 font-bold text-sm flex items-center gap-2">
+                      <td className="py-4 text-sm flex items-center gap-2 text-slate-900">
                         {asset.name}
                       </td>
-                      <td className="py-4 text-slate-400">{asset.categoryName}</td>
-                      <td className="py-4 font-mono font-bold text-amber-400">{asset.residualRate}%</td>
+                      <td className="py-4 text-slate-500">{asset.categoryName}</td>
+                      <td className="py-4 font-mono font-bold text-amber-600">{asset.residualRate}%</td>
                       <td className="py-4">
-                        <span className="text-emerald-400 font-bold">{"★".repeat(asset.inheritableScore)}</span>
+                        <span className="text-emerald-600 font-bold">{"★".repeat(asset.inheritableScore)}</span>
                         <span className="opacity-20 font-bold">{"★".repeat(5 - asset.inheritableScore)}</span>
                       </td>
                       <td className="py-4">
-                        <span className="text-sky-400 font-bold">{"★".repeat(asset.transferableScore)}</span>
+                        <span className="text-sky-600 font-bold">{"★".repeat(asset.transferableScore)}</span>
                         <span className="opacity-20 font-bold">{"★".repeat(5 - asset.transferableScore)}</span>
                       </td>
                       <td className="py-4 text-xs">
                         <span className={`px-2 py-0.5 rounded-full font-bold ${
                           asset.ownershipType === "用户所有"
-                            ? "bg-emerald-500/20 text-emerald-400"
+                            ? "bg-emerald-50 text-emerald-700 bg-emerald-100/60"
                             : asset.ownershipType === "平台所有"
-                            ? "bg-red-500/20 text-red-400"
-                            : "bg-amber-500/20 text-amber-400"
+                            ? "bg-red-50 text-red-700 bg-red-100/60"
+                            : "bg-amber-50 text-amber-700 bg-amber-100/60"
                         }`}>
                           {asset.ownershipType}
                         </span>
@@ -337,7 +338,7 @@ export default function DataExplorer() {
                   ))}
                   {processedData.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-slate-500 italic">
+                      <td colSpan={6} className="py-8 text-center text-slate-400 italic">
                         无匹配的资产数据
                       </td>
                     </tr>
@@ -348,66 +349,66 @@ export default function DataExplorer() {
 
           </div>
 
-          {/* Right Part: Selected Asset Fact-sheet Detail (4 cols) */}
-          <div className="lg:col-span-4 bg-white/5 border border-white/10 rounded-[2.5rem] p-6 backdrop-blur-xl sticky top-24 min-h-[480px] flex flex-col justify-between">
+          {/* Right Part: Selected Asset Fact-sheet Detail (hidden on mobile) */}
+          <div className="hidden lg:flex lg:col-span-4 bg-slate-50 border border-slate-200/80 rounded-[2.5rem] p-6 backdrop-blur-xl sticky top-24 min-h-[480px] flex-col justify-between shadow-sm">
             {selectedAsset ? (
-              <div className="space-y-6">
+              <div className="space-y-6 text-left">
                 <div>
                   <div className="flex justify-between items-start">
-                    <span className="text-[10px] text-emerald-400 border border-emerald-400/30 px-2 py-0.5 rounded font-mono uppercase">
+                    <span className="text-[10px] text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono uppercase bg-emerald-50">
                       FACT SHEET / 深度实证
                     </span>
-                    <span className="text-xs text-slate-500 font-mono">
+                    <span className="text-xs text-slate-400 font-mono">
                       ID: {selectedAsset.id.toUpperCase()}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-black text-white mt-3">
+                  <h3 className="text-2xl font-black text-slate-800 mt-3">
                     {selectedAsset.name}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1 font-medium">
                     属于《民法典》第127条网络虚拟财产的司法探索对象
                   </p>
                 </div>
 
                 {/* Score Stats */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-black/30 p-4 rounded-2xl border border-white/5 text-center">
-                    <div className="text-xl font-mono font-black text-amber-400">{selectedAsset.residualRate}%</div>
-                    <div className="text-[10px] text-slate-500 mt-1">二级市场残值率</div>
+                  <div className="bg-white p-4 rounded-2xl border border-slate-200/60 text-center shadow-sm">
+                    <div className="text-xl font-mono font-black text-amber-600">{selectedAsset.residualRate}%</div>
+                    <div className="text-[10px] text-slate-400 mt-1 font-medium">二级市场残值率</div>
                   </div>
-                  <div className="bg-black/30 p-4 rounded-2xl border border-white/5 text-center">
-                    <div className="text-xl font-mono font-black text-sky-400">¥{selectedAsset.avgWorth.toLocaleString()}</div>
-                    <div className="text-[10px] text-slate-500 mt-1">Z世代人均客单价</div>
+                  <div className="bg-white p-4 rounded-2xl border border-slate-200/60 text-center shadow-sm">
+                    <div className="text-xl font-mono font-black text-sky-600">¥{selectedAsset.avgWorth.toLocaleString()}</div>
+                    <div className="text-[10px] text-slate-400 mt-1 font-medium">Z世代人均估值</div>
                   </div>
                 </div>
 
                 {/* Agreement Clause */}
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-red-400 flex items-center gap-1">
+                  <h4 className="text-xs font-bold text-red-600 flex items-center gap-1">
                     📝 平台《服务协议》霸王免责条款：
                   </h4>
-                  <blockquote className="text-xs bg-red-500/5 border-l-2 border-red-500/30 p-3 text-slate-300 italic leading-relaxed">
+                  <blockquote className="text-xs bg-red-50/5 border-l-2 border-red-200 p-3 text-slate-700 italic leading-relaxed font-medium">
                     {selectedAsset.clause}
                   </blockquote>
                 </div>
 
                 {/* Legal Conflict Case */}
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                  <h4 className="text-xs font-bold text-emerald-700 flex items-center gap-1">
                     ⚖️ 司法审判实务与冲突焦点：
                   </h4>
-                  <p className="text-xs text-slate-400 leading-relaxed bg-emerald-500/5 p-3 border-l-2 border-emerald-500/30 rounded-r-xl">
+                  <p className="text-xs text-slate-600 leading-relaxed bg-emerald-50/5 p-3 border-l-2 border-emerald-200 rounded-r-xl font-medium">
                     {selectedAsset.legalCase}
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center text-slate-500 italic text-xs">
+              <div className="h-full flex items-center justify-center text-slate-400 italic text-xs">
                 请在左侧点击任一资产行，加载深度数据档案。
               </div>
             )}
 
-            <div className="text-[10px] text-slate-600 mt-6 leading-relaxed italic border-t border-white/5 pt-4">
+            <div className="text-[10px] text-slate-400 mt-6 leading-relaxed italic border-t border-slate-100 pt-4 font-medium">
               * 数据源来自：交易猫二手交易指数、中国裁判文书网民事案件案由分类检索、各大互联网平台公开版《服务条款与隐私政策》(2026版)。
             </div>
           </div>
@@ -415,6 +416,90 @@ export default function DataExplorer() {
         </div>
 
       </div>
+
+      {/* Mobile Drawer (Only visible on screens < lg) */}
+      <AnimatePresence>
+        {isDrawerOpen && selectedAsset && (
+          <>
+            {/* Overlay Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.4 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsDrawerOpen(false)}
+              className="fixed inset-0 bg-black z-40 lg:hidden"
+            />
+
+            {/* Drawer Content */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 rounded-t-[2rem] p-6 pb-10 z-50 lg:hidden max-h-[80vh] overflow-y-auto shadow-2xl"
+            >
+              {/* Drag bar indicator */}
+              <div className="w-12 h-1 bg-slate-200 rounded-full mx-auto mb-6" />
+
+              {/* Close Button */}
+              <button
+                onClick={() => setIsDrawerOpen(false)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-800 font-bold"
+              >
+                ✕
+              </button>
+
+              <div className="space-y-6 text-left">
+                <div>
+                  <div className="flex justify-between items-start">
+                    <span className="text-[9px] text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono uppercase bg-emerald-50">
+                      FACT SHEET / 深度实证
+                    </span>
+                    <span className="text-xs text-slate-400 font-mono">
+                      ID: {selectedAsset.id.toUpperCase()}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-slate-800 mt-2">
+                    {selectedAsset.name}
+                  </h3>
+                </div>
+
+                {/* Score Stats */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/60 text-center">
+                    <div className="text-lg font-mono font-black text-amber-600">{selectedAsset.residualRate}%</div>
+                    <div className="text-[9px] text-slate-400 mt-1 font-medium">二级市场残值率</div>
+                  </div>
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/60 text-center">
+                    <div className="text-lg font-mono font-black text-sky-600">¥{selectedAsset.avgWorth.toLocaleString()}</div>
+                    <div className="text-[9px] text-slate-400 mt-1 font-medium">Z世代人均估值</div>
+                  </div>
+                </div>
+
+                {/* Agreement Clause */}
+                <div className="space-y-1">
+                  <h4 className="text-xs font-bold text-red-600">
+                    📝 平台《服务协议》霸王免责条款：
+                  </h4>
+                  <blockquote className="text-xs bg-red-50/5 border-l-2 border-red-200 p-3 text-slate-700 italic leading-relaxed font-medium">
+                    {selectedAsset.clause}
+                  </blockquote>
+                </div>
+
+                {/* Legal Conflict Case */}
+                <div className="space-y-1">
+                  <h4 className="text-xs font-bold text-emerald-700">
+                    ⚖️ 司法审判实务与冲突焦点：
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed bg-emerald-50/5 p-3 border-l-2 border-emerald-200 rounded-r-xl font-medium">
+                    {selectedAsset.legalCase}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
